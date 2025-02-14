@@ -6,19 +6,21 @@ import ConfirmModal from "../UI/ConfirmModal";
 import RoomUpdateModal from "./RoomUpdateModal";
 
 export default function RoomItem(props) {
-    const {sendRequest} = useHttpClient();
+    const {isLoading,sendRequest} = useHttpClient();
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
 
     const deleteHandler = async () => {
         try {
+            setShowConfirm(true);
             await sendRequest(`${process.env.REACT_APP_API_URL}/api/rooms/${props.room.id}`, "DELETE");
             props.onRoomDeleted(props.room.id);
             setShowConfirm(false);
         } catch (error) {
             console.error(error);
             alert("削除に失敗しました。");
+            setShowConfirm(false);
         }
     };
 
@@ -94,6 +96,7 @@ export default function RoomItem(props) {
                 handleConfirm={deleteHandler}
                 title="削除確認"
                 message="この部屋を削除してもよろしいですか？"
+                isLoading={isLoading}
             />
         </div>
         

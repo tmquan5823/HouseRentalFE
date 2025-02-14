@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col, Spinner } from "react-bootstrap";
 import { useHttpClient } from "../../hooks/http-hook";
 
 export default function RoomUpdateModal({ show, handleClose, room, onUpdate }) {
-    const { sendRequest } = useHttpClient();
+    const { isLoading, sendRequest } = useHttpClient();
     const [selectedFile, setSelectedFile] = useState(null);
     const [roomData, setRoomData] = useState({});
 
@@ -45,7 +45,7 @@ export default function RoomUpdateModal({ show, handleClose, room, onUpdate }) {
         } catch (error) {
             console.error("Error updating room:", error);
         }
-    };    
+    };
 
     return (
         <Modal show={show} onHide={handleClose} centered>
@@ -116,8 +116,11 @@ export default function RoomUpdateModal({ show, handleClose, room, onUpdate }) {
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>キャンセル</Button>
-                <Button variant="primary" onClick={handleSubmit}>更新</Button>
+                <Button variant="secondary" onClick={handleClose} disabled={isLoading}>キャンセル</Button>
+                <Button variant="primary" onClick={handleSubmit} disabled={isLoading}>
+                    {isLoading ? <Spinner animation="border" size="sm" className="me-2" /> : null}
+                    更新
+                </Button>
             </Modal.Footer>
         </Modal>
     );
