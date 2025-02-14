@@ -7,18 +7,22 @@ const RoomRental = () => {
   const { sendRequest } = useHttpClient();
   const [rooms, setRooms] = useState([]);
   const [filters, setFilters] = useState({ name: "", address: "", type: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchRooms();
   }, []);
 
   const fetchRooms = async (queryParams = "") => {
+    setIsLoading(true);
     try {
       const url = `${process.env.REACT_APP_API_URL}/api/rooms/filter${queryParams ? `?${queryParams}` : ""}`;
       const response = await sendRequest(url);
       setRooms(response);
     } catch (error) {
       console.error("Error fetching rooms:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -43,7 +47,11 @@ const RoomRental = () => {
   return (
     <div className="container">
       <Header roomsCount={rooms.length} onRoomAdded={onRoomAdded} onFilter={onFilter} />
-      <RoomList rooms={rooms} onRoomDeleted={onRoomDeleted} onUpdate={onRoomUpdated} />
+      {isLoading ? (
+        <div className="text-center p-4">Loading rooms...</div>
+      ) : (
+        <RoomList rooms={rooms} onRoomDeleted={onRoomDeleted} onUpdate={onRoomUpdated} />
+      )}
     </div>
   );
 };
