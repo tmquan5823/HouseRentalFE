@@ -14,7 +14,7 @@ const RoomRental = () => {
 
   const fetchRooms = async (queryParams = "") => {
     try {
-      const url = `http://localhost:8080/api/rooms/filter${queryParams ? `?${queryParams}` : ""}`;
+      const url = `${process.env.REACT_APP_API_URL}/api/rooms/filter${queryParams ? `?${queryParams}` : ""}`;
       const response = await sendRequest(url);
       setRooms(response);
     } catch (error) {
